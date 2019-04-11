@@ -6,8 +6,9 @@ import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
-public class ClientTCP
+public class ChatTCPClient
 {
 
     public static void main (String args[]) {
@@ -21,6 +22,8 @@ public class ClientTCP
             DataOutputStream out = new DataOutputStream(s.getOutputStream());
             out.writeUTF(args[0]);
             s.close();
+            TimeUnit.SECONDS.sleep(5);
+
             if(args[0].equals("transferir")){
                 Socket s1 = new Socket("localhost", 7900);
                 Transferir trf = new Transferir(s1,args[2], args[1]);
