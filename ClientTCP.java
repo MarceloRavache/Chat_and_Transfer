@@ -7,7 +7,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-public class ChatTCPClient
+public class ClientTCP
 {
 
     public static void main (String args[]) {
@@ -23,7 +23,7 @@ public class ChatTCPClient
             s.close();
             if(args[0].equals("transferir")){
                 Socket s1 = new Socket("localhost", 7900);
-                Transferir trf = new Transferir(s1,"testein.txt");
+                Transferir trf = new Transferir(s1,args[2], args[1]);
                 Thread t1 = new Thread(trf);
                 t1.start();
             }else if(args[0].equals("chat")) {
@@ -96,17 +96,6 @@ class MyWrite implements  Runnable {
             //While adicionado depois
             while(true) {
                 msg = scn.nextLine();
-                if(msg.equals("transferir")){
-                    System.out.println("Digite o nome do arquivo...");
-                    msg = scn.nextLine();
-                    Socket socket = new Socket("localhost", 5678);
-
-                    Transferir trfArquivo = new Transferir(socket,msg);
-                    Thread threadArquivo = new Thread(trfArquivo);
-                    threadArquivo.start();
-
-                }
-                System.out.println(msg == "transferir");
                 out.writeUTF(msg);
             }
 
@@ -121,11 +110,14 @@ class Transferir implements Runnable{
     Socket serverSocket;
     String nomeArquivo;
     OutputStream out;
-    public Transferir(Socket socket, String nomeArquivo){
+    String diretorio;
+
+    public Transferir(Socket socket, String nomeArquivo, String diretorio){
         try{
             this.serverSocket = socket;
             this.nomeArquivo = nomeArquivo;
             this.out = socket.getOutputStream();
+            this.diretorio = diretorio;
         }catch (IOException e){System.out.println("Connection: "+e.getMessage());}
     }
 
@@ -133,7 +125,7 @@ class Transferir implements Runnable{
 
         try {
 
-            File arquivo = new File("/home/overnull/Documentos/" + nomeArquivo);
+            File arquivo = new File(diretorio + nomeArquivo);
             FileInputStream in = new FileInputStream(arquivo);
 
             int tamanho = 4096; //4KB
