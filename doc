@@ -1,0 +1,12 @@
+Q6.
+
+argumentos:
+
+transferir (para transferir o arquivo)
+
+chat (para usar o chat com serviço)
+
+Ex(no cliente): java executavelCompiladoEmJava transferir diretorio(/home/user/Documentos/) nomeDoArquivo(teste.txt)
+Ex(no server): java executavelCompiladoEmJava diretorio(/home/user/Documentos/) nomeDoArquivo(teste.txt)
+
+java executavel chat
