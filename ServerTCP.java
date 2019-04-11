@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 import java.util.Scanner;
 
-public class ServerTCP {
+public class ChatTCPServer {
     public static void main (String args[]) {
         try{
             int serverPort = 7896; // the server port
@@ -19,7 +19,7 @@ class Connection extends Thread {
 
     public Connection (Socket socket, String diretorio,String nomeArquivo) {
         try {
-
+        while(true) {
             DataInputStream in = new DataInputStream(socket.getInputStream());
             String escolha = in.readUTF();
             System.out.println(escolha);
@@ -55,6 +55,7 @@ class Connection extends Thread {
             } else {
                 System.out.println("Argumento não existe");
             }
+        }
 
         }catch(IOException e) {System.out.println("Connection:"+e.getMessage());}
         catch(InterruptedException e) {System.out.println("Connection:"+e.getMessage());}
@@ -136,8 +137,6 @@ class Receber implements Runnable{
     public void run(){
 
         try {
-            InputStreamReader inReceber = new InputStreamReader(in);
-            BufferedReader leitor = new BufferedReader(inReceber);
 
             System.out.println(nomeArquivo);
 
