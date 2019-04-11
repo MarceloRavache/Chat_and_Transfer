@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 import java.util.Scanner;
 
-public class ChatTCPServer {
+public class ServerTCP {
     public static void main (String args[]) {
         try{
             int serverPort = 7896; // the server port
@@ -10,14 +10,14 @@ public class ChatTCPServer {
                 ServerSocket listenSocket = new ServerSocket(serverPort);
             while (true) {
                 Socket serverSocket = listenSocket.accept();
-                Connection c = new Connection(serverSocket);
+                Connection c = new Connection(serverSocket, args[0],args[1]);
             }
         } catch(IOException e) {System.out.println("Listen socket:"+e.getMessage());}
     }
 }
 class Connection extends Thread {
 
-    public Connection (Socket socket) {
+    public Connection (Socket socket, String diretorio,String nomeArquivo) {
         try {
 
             DataInputStream in = new DataInputStream(socket.getInputStream());
@@ -48,7 +48,7 @@ class Connection extends Thread {
                 ServerSocket listenSocket = new ServerSocket(serverPort);
                 Socket serverSocket = listenSocket.accept();
 
-                Receber arquivo = new Receber(serverSocket, "teste.txt");
+                Receber arquivo = new Receber(serverSocket, nomeArquivo, diretorio);
                 Thread thread = new Thread(arquivo);
                 thread.start();
                 thread.join();
@@ -122,12 +122,14 @@ class MyWrite implements  Runnable {
 class Receber implements Runnable{
     Socket serverSocket;
     String nomeArquivo;
+    String diretorio;
     InputStream in;
-    public Receber(Socket socket, String nomeArquivo){
+    public Receber(Socket socket, String nomeArquivo,String diretorio){
         try{
             this.serverSocket = socket;
             this.nomeArquivo = nomeArquivo;
             this.in = socket.getInputStream();
+            this.diretorio = diretorio;
         }catch (IOException e){System.out.println("Connection: "+e.getMessage());}
     }
 
@@ -139,7 +141,7 @@ class Receber implements Runnable{
 
             System.out.println(nomeArquivo);
 
-            File arquivo = new File("/home/overnull/Documentos/" + nomeArquivo);
+            File arquivo = new File(diretorio + nomeArquivo);
             FileOutputStream out = new FileOutputStream(arquivo);
 
             int tamanho = 4096; //4KB
@@ -151,7 +153,6 @@ class Receber implements Runnable{
                 out.write(buffer, 0, jaLidos);
             }
             out.flush();
-            serverSocket.close();
 
         }catch (EOFException e){System.out.println("EOF:"+e.getMessage());
         } catch(IOException e) {System.out.println("readline:"+e.getMessage());
